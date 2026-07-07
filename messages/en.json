@@ -188,5 +188,8 @@
 	"reports_avg_feeds": "avg {n} feeds/day",
 	"reports_avg_nursing": "avg {min} min nursing/day",
 	"reports_avg_bottle": "avg {ml} ml bottle/day",
-	"reports_no_data": "No data yet for this period"
+	"reports_no_data": "No data yet for this period",
+	"reports_sleep": "Sleep",
+	"reports_diapers": "Diapers",
+	"reports_wellness": "Spit-up & Vomit"
 }

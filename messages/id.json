@@ -152,5 +152,8 @@
 	"reports_avg_feeds": "rata-rata {n} kali/hari",
 	"reports_avg_nursing": "rata-rata {min} mnt menyusui/hari",
 	"reports_avg_bottle": "rata-rata {ml} ml botol/hari",
-	"reports_no_data": "Belum ada data untuk periode ini"
+	"reports_no_data": "Belum ada data untuk periode ini",
+	"reports_sleep": "Tidur",
+	"reports_diapers": "Popok",
+	"reports_wellness": "Gumoh & Muntah"
 }

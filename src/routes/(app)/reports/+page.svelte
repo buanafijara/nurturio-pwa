@@ -27,23 +27,30 @@
 		return d.toLocaleDateString(locale, { day: 'numeric' });
 	}
 
-	const feedData = $derived(range.data?.map((d) => d.feedCount) ?? []);
-	const feedLabels = $derived(range.data?.map((d) => shortLabel(d.dayStartMs)) ?? []);
+	const dayLabels = $derived(range.data?.map((d) => shortLabel(d.dayStartMs)) ?? []);
 
-	const totalFeeds = $derived(feedData.reduce((s, v) => s + v, 0));
-	const avgFeeds = $derived(days.length > 0 ? (totalFeeds / days.length).toFixed(1) : '0');
+	// Feeding — bottle ml per day
+	const mlData = $derived(range.data?.map((d) => d.totalMl) ?? []);
+	const hasFeedData = $derived(mlData.some((v) => v > 0));
 
-	const totalBreastMin = $derived(range.data?.reduce((s, d) => s + d.breastMin, 0) ?? 0);
-	const avgBreastMin = $derived(
-		days.length > 0 ? Math.round(totalBreastMin / days.length) : 0
+	// Sleep — hours per day (1 decimal)
+	const sleepData = $derived(range.data?.map((d) => Math.round(d.sleepMin / 6) / 10) ?? []);
+	const hasSleepData = $derived(sleepData.some((v) => v > 0));
+
+	// Diapers — total per day with breakdown totals
+	const diaperData = $derived(
+		range.data?.map((d) => d.diapers.wet + d.diapers.dirty + d.diapers.mixed) ?? []
 	);
+	const totalWet = $derived(range.data?.reduce((s, d) => s + d.diapers.wet, 0) ?? 0);
+	const totalDirty = $derived(range.data?.reduce((s, d) => s + d.diapers.dirty, 0) ?? 0);
+	const totalMixed = $derived(range.data?.reduce((s, d) => s + d.diapers.mixed, 0) ?? 0);
+	const hasDiaperData = $derived(diaperData.some((v) => v > 0));
 
-	const totalBottleMl = $derived(range.data?.reduce((s, d) => s + d.totalMl, 0) ?? 0);
-	const avgBottleMl = $derived(
-		days.length > 0 ? Math.round(totalBottleMl / days.length) : 0
-	);
+	// Wellness — spit-up + vomit events per day
+	const wellnessData = $derived(range.data?.map((d) => d.spitUps + d.vomits) ?? []);
+	const hasWellnessData = $derived(wellnessData.some((v) => v > 0));
 
-	const hasData = $derived(totalFeeds > 0);
+	const isLoading = $derived(!selectedBaby.id || range.data === undefined);
 </script>
 
 <div class="flex flex-col gap-6">
@@ -67,28 +74,75 @@
 		<Card.Header>
 			<Card.Title>{m.reports_feeding()}</Card.Title>
 		</Card.Header>
-		<Card.Content class="flex flex-col gap-4">
-			{#if !selectedBaby.id || range.data === undefined}
+		<Card.Content>
+			{#if isLoading}
 				<div class="bg-secondary/40 h-[100px] animate-pulse rounded-md"></div>
-			{:else if !hasData}
+			{:else if !hasFeedData}
 				<p class="text-muted-foreground text-sm">{m.reports_no_data()}</p>
 			{:else}
-				<BarChart data={feedData} labels={feedLabels} />
+				<BarChart data={mlData} labels={dayLabels} formatter={(v) => `${v} ml`} />
+			{/if}
+		</Card.Content>
+	</Card.Root>
+
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>{m.reports_sleep()}</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			{#if isLoading}
+				<div class="bg-secondary/40 h-[100px] animate-pulse rounded-md"></div>
+			{:else if !hasSleepData}
+				<p class="text-muted-foreground text-sm">{m.reports_no_data()}</p>
+			{:else}
+				<BarChart data={sleepData} labels={dayLabels} formatter={(v) => `${v}h`} />
+			{/if}
+		</Card.Content>
+	</Card.Root>
+
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>{m.reports_diapers()}</Card.Title>
+		</Card.Header>
+		<Card.Content class="flex flex-col gap-4">
+			{#if isLoading}
+				<div class="bg-secondary/40 h-[100px] animate-pulse rounded-md"></div>
+			{:else if !hasDiaperData}
+				<p class="text-muted-foreground text-sm">{m.reports_no_data()}</p>
+			{:else}
+				<BarChart data={diaperData} labels={dayLabels} />
 				<div class="flex flex-wrap gap-2">
-					<span class="bg-secondary rounded-full px-3 py-1 text-xs">
-						{m.reports_avg_feeds({ n: avgFeeds })}
-					</span>
-					{#if totalBreastMin > 0}
-						<span class="bg-secondary rounded-full px-3 py-1 text-xs">
-							{m.reports_avg_nursing({ min: avgBreastMin })}
-						</span>
+					{#if totalWet > 0}
+						<span class="bg-secondary rounded-full px-3 py-1 text-xs"
+							>{m.kind_wet()} {totalWet}</span
+						>
 					{/if}
-					{#if totalBottleMl > 0}
-						<span class="bg-secondary rounded-full px-3 py-1 text-xs">
-							{m.reports_avg_bottle({ ml: avgBottleMl })}
-						</span>
+					{#if totalDirty > 0}
+						<span class="bg-secondary rounded-full px-3 py-1 text-xs"
+							>{m.kind_dirty()} {totalDirty}</span
+						>
+					{/if}
+					{#if totalMixed > 0}
+						<span class="bg-secondary rounded-full px-3 py-1 text-xs"
+							>{m.kind_mixed()} {totalMixed}</span
+						>
 					{/if}
 				</div>
+			{/if}
+		</Card.Content>
+	</Card.Root>
+
+	<Card.Root>
+		<Card.Header>
+			<Card.Title>{m.reports_wellness()}</Card.Title>
+		</Card.Header>
+		<Card.Content>
+			{#if isLoading}
+				<div class="bg-secondary/40 h-[100px] animate-pulse rounded-md"></div>
+			{:else if !hasWellnessData}
+				<p class="text-muted-foreground text-sm">{m.reports_no_data()}</p>
+			{:else}
+				<BarChart data={wellnessData} labels={dayLabels} />
 			{/if}
 		</Card.Content>
 	</Card.Root>
