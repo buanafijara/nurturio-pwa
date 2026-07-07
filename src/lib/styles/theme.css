@@ -1,0 +1,114 @@
+/*
+ * Nurtur.io brand identity — SINGLE SOURCE OF TRUTH.
+ *
+ * Every color, radius, and font in the app resolves to a token defined here.
+ * Rebranding = editing this file only. Do not define colors, radii, or
+ * font-families anywhere else (components must use semantic utilities like
+ * bg-primary, text-muted-foreground, rounded-lg).
+ */
+
+:root {
+	/* Typography */
+	--font-brand: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+	/* Shape — friendly, soft corners */
+	--radius: 1rem;
+
+	/* Light theme */
+	--background: oklch(0.99 0.008 85); /* warm off-white */
+	--foreground: oklch(0.28 0.02 55);
+	--card: oklch(1 0 0);
+	--card-foreground: oklch(0.28 0.02 55);
+	--popover: oklch(1 0 0);
+	--popover-foreground: oklch(0.28 0.02 55);
+	--primary: oklch(0.6 0.1 175); /* calm teal */
+	--primary-foreground: oklch(0.99 0.008 85);
+	--secondary: oklch(0.95 0.025 170); /* pale teal wash */
+	--secondary-foreground: oklch(0.35 0.06 175);
+	--muted: oklch(0.96 0.012 85);
+	--muted-foreground: oklch(0.52 0.02 60);
+	--accent: oklch(0.93 0.045 65); /* soft peach */
+	--accent-foreground: oklch(0.4 0.08 45);
+	--destructive: oklch(0.577 0.245 27.325);
+	--border: oklch(0.91 0.015 80);
+	--input: oklch(0.91 0.015 80);
+	--ring: oklch(0.6 0.1 175);
+	--chart-1: oklch(0.6 0.1 175);
+	--chart-2: oklch(0.75 0.11 65);
+	--chart-3: oklch(0.65 0.09 260);
+	--chart-4: oklch(0.7 0.12 20);
+	--chart-5: oklch(0.55 0.06 140);
+	--sidebar: oklch(0.97 0.01 85);
+	--sidebar-foreground: oklch(0.28 0.02 55);
+	--sidebar-primary: oklch(0.6 0.1 175);
+	--sidebar-primary-foreground: oklch(0.99 0.008 85);
+	--sidebar-accent: oklch(0.93 0.045 65);
+	--sidebar-accent-foreground: oklch(0.4 0.08 45);
+	--sidebar-border: oklch(0.91 0.015 80);
+	--sidebar-ring: oklch(0.6 0.1 175);
+}
+
+/* Baby sex accent — resolves based on data-baby-sex attribute on the app wrapper */
+:root {
+	--baby-accent: oklch(0.6 0.1 175); /* default: same as primary teal */
+	--baby-accent-foreground: oklch(0.99 0.008 85);
+	--baby-accent-subtle: oklch(0.95 0.025 170);
+}
+
+[data-baby-sex='female'] {
+	--baby-accent: oklch(0.65 0.18 350); /* rose-pink */
+	--baby-accent-foreground: oklch(0.99 0.008 85);
+	--baby-accent-subtle: oklch(0.96 0.04 350);
+}
+
+[data-baby-sex='male'] {
+	--baby-accent: oklch(0.55 0.18 240); /* sky blue */
+	--baby-accent-foreground: oklch(0.99 0.008 85);
+	--baby-accent-subtle: oklch(0.95 0.04 240);
+}
+
+/* Dark theme — dim and warm; easy on the eyes during night feeds */
+.dark {
+	--background: oklch(0.17 0.012 260);
+	--foreground: oklch(0.93 0.01 85);
+	--card: oklch(0.21 0.015 260);
+	--card-foreground: oklch(0.93 0.01 85);
+	--popover: oklch(0.21 0.015 260);
+	--popover-foreground: oklch(0.93 0.01 85);
+	--primary: oklch(0.72 0.09 175);
+	--primary-foreground: oklch(0.17 0.012 260);
+	--secondary: oklch(0.27 0.02 220);
+	--secondary-foreground: oklch(0.93 0.01 85);
+	--muted: oklch(0.26 0.015 260);
+	--muted-foreground: oklch(0.68 0.015 80);
+	--accent: oklch(0.32 0.035 60);
+	--accent-foreground: oklch(0.93 0.02 75);
+	--destructive: oklch(0.704 0.191 22.216);
+	--border: oklch(1 0 0 / 10%);
+	--input: oklch(1 0 0 / 15%);
+	--ring: oklch(0.72 0.09 175);
+	--chart-1: oklch(0.72 0.09 175);
+	--chart-2: oklch(0.78 0.1 65);
+	--chart-3: oklch(0.7 0.09 260);
+	--chart-4: oklch(0.72 0.11 20);
+	--chart-5: oklch(0.65 0.06 140);
+	--sidebar: oklch(0.21 0.015 260);
+	--sidebar-foreground: oklch(0.93 0.01 85);
+	--sidebar-primary: oklch(0.72 0.09 175);
+	--sidebar-primary-foreground: oklch(0.17 0.012 260);
+	--sidebar-accent: oklch(0.32 0.035 60);
+	--sidebar-accent-foreground: oklch(0.93 0.02 75);
+	--sidebar-border: oklch(1 0 0 / 10%);
+	--sidebar-ring: oklch(0.72 0.09 175);
+}
+
+/* Dark overrides for baby sex accent */
+.dark [data-baby-sex='female'] {
+	--baby-accent: oklch(0.75 0.16 350);
+	--baby-accent-subtle: oklch(0.27 0.05 350);
+}
+
+.dark [data-baby-sex='male'] {
+	--baby-accent: oklch(0.65 0.16 240);
+	--baby-accent-subtle: oklch(0.25 0.05 240);
+}
