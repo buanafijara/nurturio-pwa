@@ -24,7 +24,13 @@ const activityData = v.union(
 	v.object({ type: v.literal('vomit'), severity: v.optional(severity) }),
 	v.object({ type: v.literal('sleep'), endedAt: v.optional(v.number()) }),
 	v.object({ type: v.literal('solid'), amountMl: v.optional(v.number()) }),
-	v.object({ type: v.literal('photo'), photoStorageId: v.string() })
+	v.object({ type: v.literal('photo'), photoStorageId: v.string() }),
+	v.object({
+		type: v.literal('custom'),
+		customTypeId: v.id('customActivityTypes'),
+		name: v.string(),
+		emoji: v.string()
+	})
 );
 
 export const activityType = v.union(
@@ -34,7 +40,8 @@ export const activityType = v.union(
 	v.literal('vomit'),
 	v.literal('sleep'),
 	v.literal('solid'),
-	v.literal('photo')
+	v.literal('photo'),
+	v.literal('custom')
 );
 
 export const log = mutation({
@@ -147,16 +154,17 @@ export const daySummary = query({
 			)
 			.collect();
 
-		const summary = {
-			feedCount: 0,
-			totalMl: 0,
-			breastMin: 0,
+		const summary: {
+			feedCount: number; totalMl: number; breastMin: number;
+			diapers: { wet: number; dirty: number; mixed: number };
+			spitUps: number; vomits: number; sleepMin: number;
+			solidCount: number; photoCount: number;
+			customCounts: Record<string, number>;
+		} = {
+			feedCount: 0, totalMl: 0, breastMin: 0,
 			diapers: { wet: 0, dirty: 0, mixed: 0 },
-			spitUps: 0,
-			vomits: 0,
-			sleepMin: 0,
-			solidCount: 0,
-			photoCount: 0
+			spitUps: 0, vomits: 0, sleepMin: 0, solidCount: 0, photoCount: 0,
+			customCounts: {}
 		};
 		for (const doc of docs) {
 			switch (doc.type) {
@@ -187,6 +195,9 @@ export const daySummary = query({
 				case 'photo':
 					summary.photoCount += 1;
 					break;
+				case 'custom':
+					summary.customCounts[doc.name] = (summary.customCounts[doc.name] ?? 0) + 1;
+					break;
 			}
 		}
 		return summary;
@@ -215,16 +226,17 @@ export const rangeSummary = query({
 			.collect();
 
 		return days.map(({ dayStartMs, dayEndMs }) => {
-			const summary = {
-				feedCount: 0,
-				totalMl: 0,
-				breastMin: 0,
+			const summary: {
+				feedCount: number; totalMl: number; breastMin: number;
+				diapers: { wet: number; dirty: number; mixed: number };
+				spitUps: number; vomits: number; sleepMin: number;
+				solidCount: number; photoCount: number;
+				customCounts: Record<string, number>;
+			} = {
+				feedCount: 0, totalMl: 0, breastMin: 0,
 				diapers: { wet: 0, dirty: 0, mixed: 0 },
-				spitUps: 0,
-				vomits: 0,
-				sleepMin: 0,
-				solidCount: 0,
-				photoCount: 0
+				spitUps: 0, vomits: 0, sleepMin: 0, solidCount: 0, photoCount: 0,
+				customCounts: {}
 			};
 			for (const doc of docs) {
 				if (doc.occurredAt < dayStartMs || doc.occurredAt >= dayEndMs) continue;
@@ -253,6 +265,9 @@ export const rangeSummary = query({
 						break;
 					case 'photo':
 						summary.photoCount += 1;
+						break;
+					case 'custom':
+						summary.customCounts[doc.name] = (summary.customCounts[doc.name] ?? 0) + 1;
 						break;
 				}
 			}

@@ -71,6 +71,15 @@ export default defineSchema({
 		.index('by_user', ['userId'])
 		.index('by_endpoint', ['endpoint']),
 
+	// Owner-defined activity types (vitamin, tummy time, etc.) per baby.
+	customActivityTypes: defineTable({
+		babyId: v.id('babies'),
+		name: v.string(),
+		emoji: v.string(),
+		createdBy: v.id('users'),
+		archivedAt: v.optional(v.number())
+	}).index('by_baby', ['babyId']),
+
 	// One polymorphic table: the timeline ("everything for baby X, newest
 	// first") is a single index scan, and future types (e.g. MPASI solids)
 	// are additive union members — no migration.
@@ -114,6 +123,13 @@ export default defineSchema({
 				...activityBase,
 				type: v.literal('photo'),
 				photoStorageId: v.string()
+			}),
+			v.object({
+				...activityBase,
+				type: v.literal('custom'),
+				customTypeId: v.id('customActivityTypes'),
+				name: v.string(),  // denormalized for display without joins
+				emoji: v.string()
 			})
 		)
 	)

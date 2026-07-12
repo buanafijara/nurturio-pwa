@@ -11,6 +11,7 @@
 import type * as activities from "../activities.js";
 import type * as auth from "../auth.js";
 import type * as babies from "../babies.js";
+import type * as customActivityTypes from "../customActivityTypes.js";
 import type * as http from "../http.js";
 import type * as invites from "../invites.js";
 import type * as lib_access from "../lib/access.js";
@@ -29,6 +30,7 @@ declare const fullApi: ApiFromModules<{
   activities: typeof activities;
   auth: typeof auth;
   babies: typeof babies;
+  customActivityTypes: typeof customActivityTypes;
   http: typeof http;
   invites: typeof invites;
   "lib/access": typeof lib_access;

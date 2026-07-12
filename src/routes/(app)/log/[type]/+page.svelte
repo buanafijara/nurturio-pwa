@@ -16,8 +16,19 @@
 
 	const type = $derived(isActivityType(page.params.type!) ? page.params.type : null);
 	const editId = $derived(page.url.searchParams.get('edit') as Id<'activities'> | null);
+	const customTypeId = $derived(page.url.searchParams.get('typeId') as Id<'customActivityTypes'> | null);
 
 	const existing = useQuery(api.activities.get, () => (editId ? { activityId: editId } : 'skip'));
+	const customType = useQuery(api.customActivityTypes.get, () =>
+		type === 'custom' && customTypeId ? { typeId: customTypeId } : 'skip'
+	);
+
+	const pageTitle = $derived.by(() => {
+		if (type === 'custom') {
+			return customType.data ? `${customType.data.emoji} ${customType.data.name}` : '…';
+		}
+		return type ? activityLabel(type) : '';
+	});
 
 	let confirmOpen = $state(false);
 
@@ -42,7 +53,7 @@
 		<div class="flex items-center justify-between pt-2">
 			<h1 class="text-2xl font-bold">
 				{editId ? m.edit_title() : ''}
-				{activityLabel(type)}
+				{pageTitle}
 			</h1>
 			{#if editId}
 				<Button
@@ -69,7 +80,20 @@
 				{/key}
 			{/if}
 		{:else if selectedBaby.id}
-			<ActivityForm {type} babyId={selectedBaby.id} onsaved={done} />
+			{#if type === 'custom'}
+				{#if customType.data}
+					<ActivityForm
+						{type}
+						babyId={selectedBaby.id}
+						customTypeId={customType.data._id}
+						customTypeName={customType.data.name}
+						customTypeEmoji={customType.data.emoji}
+						onsaved={done}
+					/>
+				{/if}
+			{:else}
+				<ActivityForm {type} babyId={selectedBaby.id} onsaved={done} />
+			{/if}
 		{/if}
 	</div>
 

@@ -15,7 +15,12 @@
       "Bash(aws --version)",
       "Bash(node /private/tmp/claude-501/-Users-adjiebuanafijar-Projects-nurturio/20884f2f-c57d-4a4c-a812-fe1aa73dc365/scratchpad/set-bucket-policy.mjs)",
       "Bash(npx convex *)",
-      "Bash(ipconfig getifaddr *)"
+      "Bash(ipconfig getifaddr *)",
+      "Bash(npx tsc *)",
+      "Bash(pkill -f vite)",
+      "Bash(npm --prefix /Users/adjiebuanafijar/Projects/nurturio run dev)",
+      "Bash(curl -s http://localhost:5173/ -o /dev/null -w \"%{http_code}\\\\n\")",
+      "Bash(node *)"
     ]
   }
 }

@@ -2,14 +2,14 @@
 	import { useQuery } from 'convex-svelte';
 	import type { Doc } from '$lib/convex';
 	import { api } from '$lib/convex';
-	import { activityIcons, activityLabel } from '$lib/activity-types';
+	import { activityIcons, activityLabel, isBuiltinType } from '$lib/activity-types';
 	import { formatDuration } from '$lib/utils/time';
 	import { m } from '$lib/paraglide/messages';
 	import { getLocale } from '$lib/paraglide/runtime';
 
 	let { activity }: { activity: Doc<'activities'> } = $props();
 
-	const Icon = $derived(activityIcons[activity.type]);
+	const Icon = $derived(isBuiltinType(activity.type) ? activityIcons[activity.type] : null);
 
 	const photoUrl = useQuery(
 		api.activities.getPhotoUrl,
@@ -53,6 +53,8 @@
 		}
 	}
 
+	const customLabel = $derived(activity.type === 'custom' ? `${activity.emoji} ${activity.name}` : null);
+
 	const description = $derived.by(() => {
 		const parts: string[] = [];
 		switch (activity.type) {
@@ -80,7 +82,9 @@
 				if (activity.amountMl !== undefined) parts.push(`${activity.amountMl} ml`);
 				break;
 			case 'photo':
-				break;
+			break;
+		case 'custom':
+			break;
 		}
 		if (activity.note) parts.push(activity.note);
 		return parts.join(' · ');
@@ -95,15 +99,21 @@
 </script>
 
 <a
-	href="/log/{activity.type}?edit={activity._id}"
+	href={activity.type === 'custom'
+		? `/log/custom?typeId=${activity.customTypeId}&edit=${activity._id}`
+		: `/log/${activity.type}?edit=${activity._id}`}
 	class="bg-card flex flex-col rounded-xl border overflow-hidden"
 >
 	<div class="flex min-h-16 items-center gap-3 px-3 py-2">
 		<span class="bg-secondary flex size-10 shrink-0 items-center justify-center rounded-full">
-			<Icon class="text-primary size-5" />
+			{#if Icon}
+				<Icon class="text-primary size-5" />
+			{:else}
+				<span class="text-lg leading-none">{activity.type === 'custom' ? activity.emoji : '•'}</span>
+			{/if}
 		</span>
 		<span class="min-w-0 flex-1">
-			<span class="block font-medium">{activityLabel(activity.type)}</span>
+			<span class="block font-medium">{customLabel ?? activityLabel(activity.type)}</span>
 			{#if description}
 				<span class="text-muted-foreground block truncate text-sm">{description}</span>
 			{/if}

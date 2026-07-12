@@ -3,9 +3,14 @@ import type { Component } from 'svelte';
 import { m } from '$lib/paraglide/messages';
 
 export const ACTIVITY_TYPES = ['feed', 'diaper', 'spit_up', 'vomit', 'sleep', 'solid', 'photo'] as const;
-export type ActivityType = (typeof ACTIVITY_TYPES)[number];
+export type BuiltinActivityType = (typeof ACTIVITY_TYPES)[number];
+export type ActivityType = BuiltinActivityType | 'custom';
 
-export const activityIcons: Record<ActivityType, Component<IconProps>> = {
+export function isBuiltinType(type: string): type is BuiltinActivityType {
+	return (ACTIVITY_TYPES as readonly string[]).includes(type);
+}
+
+export const activityIcons: Record<BuiltinActivityType, Component<IconProps>> = {
 	feed: Baby,
 	diaper: Droplets,
 	spit_up: CloudDrizzle,
@@ -31,9 +36,11 @@ export function activityLabel(type: ActivityType): string {
 			return m.activity_solid();
 		case 'photo':
 			return m.activity_photo();
+		case 'custom':
+			return 'Custom';
 	}
 }
 
 export function isActivityType(value: string): value is ActivityType {
-	return (ACTIVITY_TYPES as readonly string[]).includes(value);
+	return (ACTIVITY_TYPES as readonly string[]).includes(value) || value === 'custom';
 }

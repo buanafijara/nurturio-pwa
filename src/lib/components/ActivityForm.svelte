@@ -22,11 +22,17 @@
 		type,
 		babyId,
 		existing = null,
+		customTypeId = null,
+		customTypeName = '',
+		customTypeEmoji = '',
 		onsaved
 	}: {
 		type: ActivityType;
 		babyId: Id<'babies'>;
 		existing?: Doc<'activities'> | null;
+		customTypeId?: Id<'customActivityTypes'> | null;
+		customTypeName?: string;
+		customTypeEmoji?: string;
 		onsaved: () => void;
 	} = $props();
 
@@ -170,6 +176,13 @@
 			case 'photo':
 				// photoStorageId is resolved in save() after upload; placeholder here
 				return { type: 'photo' as const, photoStorageId: '' };
+			case 'custom':
+				return {
+					type: 'custom' as const,
+					customTypeId: (existing?.type === 'custom' ? existing.customTypeId : customTypeId) as Id<'customActivityTypes'>,
+					name: existing?.type === 'custom' ? existing.name : customTypeName,
+					emoji: existing?.type === 'custom' ? existing.emoji : customTypeEmoji
+				};
 		}
 	}
 

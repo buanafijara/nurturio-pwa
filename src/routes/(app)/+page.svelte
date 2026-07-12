@@ -8,6 +8,7 @@
 		activityLabel,
 		type ActivityType
 	} from '$lib/activity-types';
+	import { goto } from '$app/navigation';
 	import BabyHeader from '$lib/components/BabyHeader.svelte';
 	import DaySummaryCard from '$lib/components/DaySummaryCard.svelte';
 	import InstallCard from '$lib/components/InstallCard.svelte';
@@ -22,6 +23,10 @@
 	const babies = useQuery(api.babies.listMine, {});
 	const baby = $derived(babies.data?.find((b) => b._id === selectedBaby.id));
 
+	const customTypes = useQuery(api.customActivityTypes.list, () =>
+		selectedBaby.id ? { babyId: selectedBaby.id } : 'skip'
+	);
+
 	const lastSleep = useQuery(api.activities.lastOfType, () =>
 		selectedBaby.id ? { babyId: selectedBaby.id, type: 'sleep' as const } : 'skip'
 	);
@@ -35,6 +40,10 @@
 	function openLog(type: ActivityType) {
 		sheetType = type;
 		sheetOpen = true;
+	}
+
+	function openCustomLog(typeId: string) {
+		goto(`/log/custom?typeId=${typeId}`);
 	}
 
 	async function wake() {
@@ -103,6 +112,16 @@
 				>
 					<Icon class="text-primary size-7" />
 					<span class="font-medium">{activityLabel(type)}</span>
+				</button>
+			{/each}
+			{#each customTypes.data ?? [] as ct (ct._id)}
+				<button
+					class="bg-card text-card-foreground flex min-h-24 flex-col items-center justify-center gap-2 rounded-xl border p-4 transition-colors active:scale-95 disabled:opacity-50"
+					onclick={() => openCustomLog(ct._id)}
+					disabled={!selectedBaby.id}
+				>
+					<span class="text-3xl leading-none">{ct.emoji}</span>
+					<span class="font-medium">{ct.name}</span>
 				</button>
 			{/each}
 		</div>
