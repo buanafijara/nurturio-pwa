@@ -16,6 +16,8 @@
 	"activity_sleep": "Sleep",
 	"activity_solid": "Solid food",
 	"activity_photo": "Photo",
+	"photo_take_camera": "Camera",
+	"photo_choose_gallery": "Gallery",
 	"summary_solid": "{count} solid meal(s)",
 	"timeline_title": "Timeline",
 	"timeline_empty": "Activities you log will appear here.",

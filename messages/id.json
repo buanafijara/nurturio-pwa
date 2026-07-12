@@ -16,6 +16,8 @@
 	"activity_sleep": "Tidur",
 	"activity_solid": "MPASI",
 	"activity_photo": "Foto",
+	"photo_take_camera": "Kamera",
+	"photo_choose_gallery": "Galeri",
 	"summary_solid": "{count} sesi MPASI",
 	"timeline_title": "Riwayat",
 	"timeline_empty": "Aktivitas yang kamu catat akan muncul di sini.",

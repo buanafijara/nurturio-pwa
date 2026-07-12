@@ -10,7 +10,7 @@
 	import SegmentedControl from '$lib/components/SegmentedControl.svelte';
 	import AmountStepper from '$lib/components/AmountStepper.svelte';
 	import TimeAgoPicker from '$lib/components/TimeAgoPicker.svelte';
-	import { Camera, LoaderCircle } from '@lucide/svelte';
+	import { Camera, ImageIcon, LoaderCircle } from '@lucide/svelte';
 	import { uploadFile } from '$lib/upload';
 
 	type FeedMethod =
@@ -293,7 +293,7 @@
 			<AmountStepper bind:value={solidAmountMl} label={m.amount_ml()} />
 		</div>
 	{:else if type === 'photo'}
-		<label class="cursor-pointer">
+		<div class="flex flex-col gap-3">
 			{#if photoPreviewUrl}
 				<img src={photoPreviewUrl} alt="preview" class="w-full max-h-72 rounded-xl object-cover" />
 			{:else}
@@ -301,15 +301,34 @@
 					<Camera class="text-muted-foreground size-10" />
 				</div>
 			{/if}
-			<input
-				type="file"
-				accept="image/*"
-				capture="environment"
-				class="sr-only"
-				onchange={handlePhotoChange}
-				aria-label={m.activity_photo()}
-			/>
-		</label>
+			<div class="grid grid-cols-2 gap-2">
+				<label class="cursor-pointer">
+					<div class="bg-secondary hover:bg-secondary/80 flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
+						<Camera class="size-4" />
+						{m.photo_take_camera()}
+					</div>
+					<input
+						type="file"
+						accept="image/*"
+						capture="environment"
+						class="sr-only"
+						onchange={handlePhotoChange}
+					/>
+				</label>
+				<label class="cursor-pointer">
+					<div class="bg-secondary hover:bg-secondary/80 flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-medium transition-colors">
+						<ImageIcon class="size-4" />
+						{m.photo_choose_gallery()}
+					</div>
+					<input
+						type="file"
+						accept="image/*"
+						class="sr-only"
+						onchange={handlePhotoChange}
+					/>
+				</label>
+			</div>
+		</div>
 	{/if}
 
 	<div class="flex flex-col gap-2">
