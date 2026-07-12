@@ -71,6 +71,17 @@ export default defineSchema({
 		.index('by_user', ['userId'])
 		.index('by_endpoint', ['endpoint']),
 
+	// Owner-set daily/weekly targets for activity metrics.
+	activityTargets: defineTable({
+		babyId: v.id('babies'),
+		activityType: v.string(), // 'feed' | 'sleep' | 'diaper' | 'solid' | 'custom' | ...
+		customTypeId: v.optional(v.id('customActivityTypes')), // only when activityType === 'custom'
+		customTypeName: v.optional(v.string()), // denormalized for display
+		period: v.union(v.literal('daily'), v.literal('weekly')),
+		metric: v.union(v.literal('count'), v.literal('ml'), v.literal('min')),
+		targetValue: v.number()
+	}).index('by_baby', ['babyId']),
+
 	// Owner-defined activity types (vitamin, tummy time, etc.) per baby.
 	customActivityTypes: defineTable({
 		babyId: v.id('babies'),

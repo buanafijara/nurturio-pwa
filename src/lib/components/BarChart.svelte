@@ -4,18 +4,20 @@
 		labels: string[];
 		height?: number;
 		formatter?: (v: number) => string;
+		target?: number;
 	}
 
-	let { data, labels, height = 100, formatter = (v) => String(v) }: Props = $props();
+	let { data, labels, height = 100, formatter = (v) => String(v), target }: Props = $props();
 
-	const maxVal = $derived(Math.max(...data, 1));
+	// Scale so the target line always fits within the chart.
+	const maxVal = $derived(Math.max(...data, target ?? 0, 1));
 
 	// Show at most 7 labels to avoid crowding on 30-day view.
 	const labelStep = $derived(Math.ceil(data.length / 7));
 </script>
 
 <div class="flex flex-col gap-1">
-	<div class="flex items-end gap-[2px]" style="height: {height}px">
+	<div class="relative flex items-end gap-[2px]" style="height: {height}px">
 		{#each data as value, i (i)}
 			{@const barH = Math.round((value / maxVal) * height)}
 			<div class="relative flex flex-1 flex-col items-center justify-end">
@@ -30,6 +32,18 @@
 				></div>
 			</div>
 		{/each}
+		{#if target}
+			{@const lineTop = height - Math.round((target / maxVal) * height)}
+			<div
+				class="pointer-events-none absolute left-0 right-0 flex items-center"
+				style="top: {lineTop}px"
+			>
+				<div class="h-[1.5px] flex-1 border-t-2 border-dashed border-amber-400 opacity-80"></div>
+				<span class="text-amber-500 ml-1 shrink-0 text-[8px] leading-none font-medium"
+					>{formatter(target)}</span
+				>
+			</div>
+		{/if}
 	</div>
 	<div class="flex gap-[2px]">
 		{#each labels as label, i (i)}

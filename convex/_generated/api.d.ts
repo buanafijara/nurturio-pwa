@@ -9,6 +9,7 @@
  */
 
 import type * as activities from "../activities.js";
+import type * as activityTargets from "../activityTargets.js";
 import type * as auth from "../auth.js";
 import type * as babies from "../babies.js";
 import type * as customActivityTypes from "../customActivityTypes.js";
@@ -28,6 +29,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   activities: typeof activities;
+  activityTargets: typeof activityTargets;
   auth: typeof auth;
   babies: typeof babies;
   customActivityTypes: typeof customActivityTypes;

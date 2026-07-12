@@ -16,6 +16,9 @@
 	const range = useQuery(api.activities.rangeSummary, () =>
 		selectedBaby.id ? { babyId: selectedBaby.id, days } : 'skip'
 	);
+	const targets = useQuery(api.activityTargets.list, () =>
+		selectedBaby.id ? { babyId: selectedBaby.id } : 'skip'
+	);
 
 	const locale = getLocale();
 
@@ -51,6 +54,23 @@
 	const hasWellnessData = $derived(wellnessData.some((v) => v > 0));
 
 	const isLoading = $derived(!selectedBaby.id || range.data === undefined);
+
+	// Daily target values for each chart (undefined = no target set).
+	const feedMlTarget = $derived(
+		targets.data?.find((t) => t.activityType === 'feed' && t.metric === 'ml' && t.period === 'daily')
+			?.targetValue
+	);
+	const sleepTargetH = $derived(
+		(() => {
+			const t = targets.data?.find(
+				(t) => t.activityType === 'sleep' && t.period === 'daily'
+			);
+			return t ? Math.round((t.targetValue / 60) * 10) / 10 : undefined;
+		})()
+	);
+	const diaperTarget = $derived(
+		targets.data?.find((t) => t.activityType === 'diaper' && t.period === 'daily')?.targetValue
+	);
 </script>
 
 <div class="flex flex-col gap-6">
@@ -80,7 +100,7 @@
 			{:else if !hasFeedData}
 				<p class="text-muted-foreground text-sm">{m.reports_no_data()}</p>
 			{:else}
-				<BarChart data={mlData} labels={dayLabels} formatter={(v) => `${v} ml`} />
+				<BarChart data={mlData} labels={dayLabels} formatter={(v) => `${v} ml`} target={feedMlTarget} />
 			{/if}
 		</Card.Content>
 	</Card.Root>
@@ -95,7 +115,7 @@
 			{:else if !hasSleepData}
 				<p class="text-muted-foreground text-sm">{m.reports_no_data()}</p>
 			{:else}
-				<BarChart data={sleepData} labels={dayLabels} formatter={(v) => `${v}h`} />
+				<BarChart data={sleepData} labels={dayLabels} formatter={(v) => `${v}h`} target={sleepTargetH} />
 			{/if}
 		</Card.Content>
 	</Card.Root>
@@ -110,7 +130,7 @@
 			{:else if !hasDiaperData}
 				<p class="text-muted-foreground text-sm">{m.reports_no_data()}</p>
 			{:else}
-				<BarChart data={diaperData} labels={dayLabels} />
+				<BarChart data={diaperData} labels={dayLabels} target={diaperTarget} />
 				<div class="flex flex-wrap gap-2">
 					{#if totalWet > 0}
 						<span class="bg-secondary rounded-full px-3 py-1 text-xs"

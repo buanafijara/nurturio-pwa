@@ -196,7 +196,7 @@ export const daySummary = query({
 					summary.photoCount += 1;
 					break;
 				case 'custom':
-					summary.customCounts[doc.name] = (summary.customCounts[doc.name] ?? 0) + 1;
+					summary.customCounts[doc.customTypeId] = (summary.customCounts[doc.customTypeId] ?? 0) + 1;
 					break;
 			}
 		}

@@ -9,7 +9,7 @@
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Button } from '$lib/components/ui/button';
 	import { Separator } from '$lib/components/ui/separator';
-	import { Baby, ChevronRight, LogOut, Plus, Sparkles, Users } from '@lucide/svelte';
+	import { Baby, ChevronRight, LogOut, Plus, Sparkles, Target, Users } from '@lucide/svelte';
 	import NotificationToggle from '$lib/components/NotificationToggle.svelte';
 
 	const me = useQuery(api.users.me, {});
@@ -76,6 +76,12 @@
 			<a href="/settings/custom-activities" class="flex min-h-12 items-center gap-3">
 				<Sparkles class="text-primary size-5" />
 				<span class="flex-1 font-medium">Custom Activities</span>
+				<ChevronRight class="text-muted-foreground size-4" />
+			</a>
+			<Separator />
+			<a href="/settings/goals" class="flex min-h-12 items-center gap-3">
+				<Target class="text-primary size-5" />
+				<span class="flex-1 font-medium">Goals</span>
 				<ChevronRight class="text-muted-foreground size-4" />
 			</a>
 			<Separator />
