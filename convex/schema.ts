@@ -34,7 +34,7 @@ export default defineSchema({
 		name: v.string(),
 		dateOfBirth: v.string(), // "YYYY-MM-DD" — a calendar date, not an instant
 		sex: v.union(v.literal('male'), v.literal('female')),
-		photoStorageId: v.optional(v.id('_storage')),
+		photoStorageId: v.optional(v.string()),
 		createdBy: v.id('users'),
 		archivedAt: v.optional(v.number())
 	}),
@@ -113,7 +113,7 @@ export default defineSchema({
 			v.object({
 				...activityBase,
 				type: v.literal('photo'),
-				photoStorageId: v.id('_storage')
+				photoStorageId: v.string()
 			})
 		)
 	)

@@ -1,7 +1,21 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(xargs ls -la)",
+      "Bash(node -e \"const pkg = require\\('./node_modules/@mmailaender/convex-better-auth-svelte/package.json'\\); console.log\\(Object.keys\\(pkg.exports || {}\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const pkg = require\\('./node_modules/@convex-dev/better-auth/package.json'\\); console.log\\(Object.keys\\(pkg.exports || {}\\).join\\('\\\\n'\\)\\)\")",
+      "Skill(run)",
+      "Bash(curl -s http://localhost:5173)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
+      "Bash(curl -s \"https://public.sg-sin-1.linodeobjects.com/photos/4b1149fa-d950-4b3a-941e-1e50f3e3c8e7\" -o /dev/null -w \"%{http_code} %{size_download} bytes\\\\n\")",
+      "Bash(node /private/tmp/claude-501/-Users-adjiebuanafijar-Projects-nurturio/20884f2f-c57d-4a4c-a812-fe1aa73dc365/scratchpad/test-upload-full.mjs)",
+      "Bash(curl -s \"https://public.sg-sin-1.linodeobjects.com/photos/e98f1d59-181c-4f3e-9a57-72fea7b317e6\" -o /dev/null -w \"%{http_code} %{size_download} bytes content-type: %{content_type}\\\\n\")",
+      "Bash(curl -s \"https://public.sg-sin-1.linodeobjects.com/photos/e98f1d59-181c-4f3e-9a57-72fea7b317e6\")",
+      "Bash(aws --version)",
+      "Bash(node /private/tmp/claude-501/-Users-adjiebuanafijar-Projects-nurturio/20884f2f-c57d-4a4c-a812-fe1aa73dc365/scratchpad/set-bucket-policy.mjs)",
+      "Bash(npx convex *)",
+      "Bash(ipconfig getifaddr *)"
     ]
   }
 }

@@ -3,7 +3,6 @@
 		createSvelteAuthClient,
 		type AuthClient
 	} from '@mmailaender/convex-better-auth-svelte/svelte';
-	import { browser } from '$app/environment';
 	import { PUBLIC_CONVEX_URL } from '$env/static/public';
 	import { ModeWatcher } from 'mode-watcher';
 	import { Toaster } from '$lib/components/ui/sonner';
@@ -14,13 +13,7 @@
 
 	let { children } = $props();
 
-	// In dev, phones on the local network can't reach 127.0.0.1:3210 (the
-	// Convex local process). Build the URL dynamically so it routes through
-	// Vite's /convex-proxy, which forwards to 127.0.0.1:3210.
-	const convexUrl =
-		browser && import.meta.env.DEV
-			? `${window.location.origin}/convex-proxy`
-			: PUBLIC_CONVEX_URL;
+	const convexUrl = PUBLIC_CONVEX_URL;
 
 	// Wires the Convex client (setupConvex) + Better Auth token exchange;
 	// components consume it via useQuery/useConvexClient/useAuth.

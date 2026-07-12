@@ -14,6 +14,7 @@ import type * as babies from "../babies.js";
 import type * as http from "../http.js";
 import type * as invites from "../invites.js";
 import type * as lib_access from "../lib/access.js";
+import type * as lib_s3 from "../lib/s3.js";
 import type * as notifications from "../notifications.js";
 import type * as pushSubscriptions from "../pushSubscriptions.js";
 import type * as users from "../users.js";
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   invites: typeof invites;
   "lib/access": typeof lib_access;
+  "lib/s3": typeof lib_s3;
   notifications: typeof notifications;
   pushSubscriptions: typeof pushSubscriptions;
   users: typeof users;

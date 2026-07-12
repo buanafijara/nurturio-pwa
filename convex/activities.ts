@@ -4,6 +4,7 @@ import { mutation, query } from './_generated/server';
 import { internal } from './_generated/api';
 import { diaperKind, feedMethod, severity } from './schema';
 import { requireMembership, safeMembership, safeUser } from './lib/access';
+import { publicUrl } from './lib/s3';
 
 // Type-specific payload, shared by log and update.
 const activityData = v.union(
@@ -23,7 +24,7 @@ const activityData = v.union(
 	v.object({ type: v.literal('vomit'), severity: v.optional(severity) }),
 	v.object({ type: v.literal('sleep'), endedAt: v.optional(v.number()) }),
 	v.object({ type: v.literal('solid'), amountMl: v.optional(v.number()) }),
-	v.object({ type: v.literal('photo'), photoStorageId: v.id('_storage') })
+	v.object({ type: v.literal('photo'), photoStorageId: v.string() })
 );
 
 export const activityType = v.union(
@@ -109,7 +110,7 @@ export const get = query({
 		if (!activity) return null;
 		if (!(await safeMembership(ctx, activity.babyId))) return null;
 		if (activity.type === 'photo') {
-			return { ...activity, photoUrl: await ctx.storage.getUrl(activity.photoStorageId) };
+			return { ...activity, photoUrl: publicUrl(activity.photoStorageId) };
 		}
 		return activity;
 	}
@@ -273,11 +274,11 @@ export const lastOfType = query({
 	}
 });
 
-// Resolves a storage ID to a signed URL. Used by ActivityRow for photo thumbnails.
+// Resolves an S3 key to a public URL. Used by ActivityRow for photo thumbnails.
 export const getPhotoUrl = query({
-	args: { storageId: v.id('_storage') },
+	args: { storageId: v.string() },
 	handler: async (ctx, { storageId }) => {
 		if (!(await safeUser(ctx))) return null;
-		return ctx.storage.getUrl(storageId);
+		return publicUrl(storageId);
 	}
 });

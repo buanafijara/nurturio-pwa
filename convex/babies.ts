@@ -7,12 +7,13 @@ import {
 	safeMembership,
 	safeUser
 } from './lib/access';
+import { publicUrl } from './lib/s3';
 
 const babyFields = {
 	name: v.string(),
 	dateOfBirth: v.string(),
 	sex: v.union(v.literal('male'), v.literal('female')),
-	photoStorageId: v.optional(v.id('_storage'))
+	photoStorageId: v.optional(v.string())
 };
 
 export const create = mutation({
@@ -31,7 +32,7 @@ export const update = mutation({
 		name: v.optional(v.string()),
 		dateOfBirth: v.optional(v.string()),
 		sex: v.optional(v.union(v.literal('male'), v.literal('female'))),
-		photoStorageId: v.optional(v.id('_storage'))
+		photoStorageId: v.optional(v.string())
 	},
 	handler: async (ctx, { babyId, ...patch }) => {
 		await requireMembership(ctx, babyId);
@@ -64,7 +65,7 @@ export const listMine = query({
 				return {
 					...baby,
 					role: membership.role,
-					photoUrl: baby.photoStorageId ? await ctx.storage.getUrl(baby.photoStorageId) : null
+					photoUrl: baby.photoStorageId ? publicUrl(baby.photoStorageId) : null
 				};
 			})
 		);
@@ -83,7 +84,7 @@ export const get = query({
 		return {
 			...baby,
 			role: membership.role,
-			photoUrl: baby.photoStorageId ? await ctx.storage.getUrl(baby.photoStorageId) : null
+			photoUrl: baby.photoStorageId ? publicUrl(baby.photoStorageId) : null
 		};
 	}
 });
@@ -108,13 +109,5 @@ export const caregivers = query({
 				};
 			})
 		);
-	}
-});
-
-export const generateUploadUrl = mutation({
-	args: {},
-	handler: async (ctx) => {
-		await requireUser(ctx);
-		return ctx.storage.generateUploadUrl();
 	}
 });

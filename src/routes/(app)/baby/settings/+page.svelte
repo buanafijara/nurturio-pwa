@@ -28,7 +28,7 @@
 		if (!selectedBaby.id) return;
 		busy = true;
 		try {
-			const photoStorageId = data.file ? await uploadFile(client, data.file) : undefined;
+			const photoStorageId = data.file ? await uploadFile(data.file) : undefined;
 			await client.mutation(api.babies.update, {
 				babyId: selectedBaby.id,
 				name: data.name,

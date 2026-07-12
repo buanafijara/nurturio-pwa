@@ -1,14 +1,8 @@
-import type { ConvexClient } from 'convex/browser';
-import { api, type Id } from '$lib/convex';
-
-export async function uploadFile(client: ConvexClient, file: File): Promise<Id<'_storage'>> {
-	const uploadUrl = await client.mutation(api.babies.generateUploadUrl, {});
-	const response = await fetch(uploadUrl, {
-		method: 'POST',
-		headers: { 'Content-Type': file.type },
-		body: file
-	});
+export async function uploadFile(file: File): Promise<string> {
+	const formData = new FormData();
+	formData.append('file', file);
+	const response = await fetch('/api/upload', { method: 'POST', body: formData });
 	if (!response.ok) throw new Error(`Upload failed: ${response.status}`);
-	const { storageId } = await response.json();
-	return storageId;
+	const { key } = await response.json();
+	return key;
 }

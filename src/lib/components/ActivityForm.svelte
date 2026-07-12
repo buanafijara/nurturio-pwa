@@ -169,7 +169,7 @@
 				};
 			case 'photo':
 				// photoStorageId is resolved in save() after upload; placeholder here
-				return { type: 'photo' as const, photoStorageId: '' as Id<'_storage'> };
+				return { type: 'photo' as const, photoStorageId: '' };
 		}
 	}
 
@@ -180,11 +180,11 @@
 		try {
 			let data = buildData();
 			if (type === 'photo') {
-				let photoStorageId: Id<'_storage'>;
+				let photoStorageId: string;
 				if (selectedPhotoFile) {
-					photoStorageId = await uploadFile(client, selectedPhotoFile);
+					photoStorageId = await uploadFile(selectedPhotoFile);
 				} else {
-					photoStorageId = (existing as Doc<'activities'> & { photoStorageId: Id<'_storage'> }).photoStorageId;
+					photoStorageId = (existing as Doc<'activities'> & { photoStorageId: string }).photoStorageId;
 				}
 				data = { type: 'photo' as const, photoStorageId };
 			}

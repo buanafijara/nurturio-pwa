@@ -20,7 +20,7 @@
 	}) {
 		busy = true;
 		try {
-			const photoStorageId = data.file ? await uploadFile(client, data.file) : undefined;
+			const photoStorageId = data.file ? await uploadFile(data.file) : undefined;
 			const babyId = await client.mutation(api.babies.create, {
 				name: data.name,
 				dateOfBirth: data.dateOfBirth,
